@@ -63,13 +63,15 @@
 # Part 1 - Backend
 - Tech: Node.js, express, express-fileupload, xml-js
 - [ ] POST - Upload file
+    - [x] recieve file from POST request
     - [ ] Validation
-        - [ ] Valid XML
-        - [ ] Root element is `<iati-activities>`
-    - [ ] Store file
-    - [ ] Response w/ unique identifier
-- [ ] GET - Parse 
-    - [ ] Get .xml and return JSON array
+        - [x] Valid XML 
+        - [x] Root element is `<iati-activities>`
+        - [ ] validate against Schema??
+    - [x] Store file
+    - [x] Response w/ unique identifier
+- [x] GET - Parse 
+    - [x] Get .xml from storage and return JSON array
 
 # Part 2 - SPA Front End
 - Tech: HTML, JavaScript, axiom, DOM
