@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>  
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IATI XML Parser</title>
+
+        <!-- Bootstrap core CSS -->
+    <link href="./bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+
+    <script defer src="./script.js"></script>
+</head>
+<body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="masthead mb-auto">
+    <div class="inner">
+        <h1 class="cover-heading">IATA XML Upload & Parse</h1>
+    </div>
+  </header>
+  <main role="main" class="inner cover">
+    <p class="lead">Upload an XML file to validate it and display the contained activity identifiers</p>
+    <form   
+        ref='uploadForm' 
+        id='uploadForm' 
+        action='http://localhost:3000/iatidoc' 
+        method='post' 
+        encType="multipart/form-data"
+    >
+        <div class="needs-validation form-group lead">
+            <input 
+                type="file" 
+                id="xmlInput" 
+                class="form-control mb-4" 
+                name="xmlUpload" 
+                aria-describedby="invalid-feedback" 
+            />
+            <div id="invalid-feedback" class="invalid-feedback mb-4">
+            </div>
+            <button type="submit" id="submitXML" class="btn btn-lg btn-secondary">
+                Submit
+            </button>
+        </div>
+    </form>  
+    <section class="inner cover" >
+        <ul id="display-list">
+        </ul>
+    </section>
+  </main>
+  <footer class="mastfoot mt-auto">
+    <div class="inner">
+      <p>IATI XML Upload & Parse, by <a href="https://nikolaso.com">Nik Osvalds</a>.</p>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

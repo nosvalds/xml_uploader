@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const xml2js = require('xml2js');
 const parser = new xml2js.Parser();
 const fs = require('fs');
-const util = require('util');
 
 const app = express();
 
@@ -90,6 +89,9 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
         });
     }
 });
+
+// serve the public folder for the front end
+app.use(express.static('public'))
 
 app.listen(port, () => 
   console.log(`App is listening on port ${port}.`)
