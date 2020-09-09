@@ -1,6 +1,5 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const xml2js = require('xml2js');
@@ -15,7 +14,6 @@ app.use(fileUpload({
 }));
 
 //add other middleware
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));

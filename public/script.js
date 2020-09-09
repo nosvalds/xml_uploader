@@ -1,26 +1,29 @@
 ((d, w) => {
 
+    // select elements
     let form = d.getElementById('uploadForm');
     let input = d.getElementById('xmlInput');
     let feedback = d.getElementById('invalid-feedback');
     let button = d.getElementById('submitBtn');
     let display = d.getElementById('display-list');
 
+    const myHeaders = new Headers();
+    myHeaders.append("Accept", "application/json")
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         input.classList.remove('is-invalid');
 
-        // TODO do something here to show user that form is being submitted
-        const myHeaders = new Headers();
-        myHeaders.append("Accept", "application/json")
-
-        fetch(e.target.action, {
+        // POST XML to Backend API
+        fetch(d.URL + 'iatidoc', {
             method: 'POST',
             headers: myHeaders,
             body: new FormData(e.currentTarget) // event.currentTarget is the form
         })
         .then((data) => {
             display = d.getElementById('display-list'); // get updated display
+
+            // remove previous results if we had any
             if (display.children.length > 0) {
                 Array.from(display.children).forEach((child) => display.removeChild(child));
             }
@@ -28,14 +31,17 @@
         })
         .then(handleResponse)
         .then((data) => {
-            // TODO handle success
+            // handle success
             form.classList.add('is-valid');
-            fetch('http://localhost:3000/iatidoc/activity-identifiers/' + data.identifier, {
+
+            // if POST was successfull GET information about identifiers
+            fetch(e.target.action +'iatidoc/activity-identifiers/' + data.identifier, {
                 method: 'GET',
                 headers: myHeaders,
             })
                 .then(handleResponse)
                 .then((data) => {
+                    // output identifiers into the page
                     let fragment = d.createDocumentFragment();
                     let header = d.createElement("h3");
                     header.textContent = "Activity Identifiers";
