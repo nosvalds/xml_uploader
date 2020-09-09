@@ -1,5 +1,4 @@
 ((d, w) => {
-
     // select elements
     let form = d.getElementById('uploadForm');
     let input = d.getElementById('xmlInput');
@@ -10,12 +9,12 @@
     const myHeaders = new Headers();
     myHeaders.append("Accept", "application/json")
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         input.classList.remove('is-invalid');
 
         // POST XML to Backend API
-        fetch(d.URL + 'iatidoc', {
+        let postResult = await fetch(d.URL + 'iatidoc', {
             method: 'POST',
             headers: myHeaders,
             body: new FormData(e.currentTarget) // event.currentTarget is the form
@@ -30,34 +29,6 @@
             return data
         })
         .then(handleResponse)
-        .then((data) => {
-            // handle success
-            form.classList.add('is-valid');
-
-            // if POST was successfull GET information about identifiers
-            fetch(e.target.action +'iatidoc/activity-identifiers/' + data.identifier, {
-                method: 'GET',
-                headers: myHeaders,
-            })
-                .then(handleResponse)
-                .then((data) => {
-                    // output identifiers into the page
-                    let fragment = d.createDocumentFragment();
-                    let header = d.createElement("h3");
-                    header.textContent = "Activity Identifiers";
-                    fragment.prepend(header);
-                    data.data.forEach((identifier) => {
-                        let el = d.createElement("li")
-                        let key = Object.keys(identifier).join('')
-                        el.textContent = identifier[key];
-                        fragment.append(el);
-                    })
-                    display.append(fragment);
-
-                    button.setAttribute('disabled', true); // disable submit button
-                    button.setAttribute('aria-disabled', true); // disable submit button
-                })
-        })
         .catch((error) => {
             //  handle error
             input.classList.add('is-invalid');
@@ -68,6 +39,34 @@
             button.setAttribute('disabled', true); // disable submit button
             button.setAttribute('aria-disabled', true); // disable submit button
         });
+
+        if (postResult) {
+            // handle success
+            form.classList.add('is-valid');
+
+            // if POST was successfull GET information about identifiers
+            let getResult = await fetch(e.target.action +'iatidoc/activity-identifiers/' + postResult.identifier, {
+                method: 'GET',
+                headers: myHeaders,
+            })
+            .then(handleResponse)
+            
+            // output identifiers into the page
+            let fragment = d.createDocumentFragment();
+            let header = d.createElement("h3");
+            header.textContent = "Activity Identifiers";
+            fragment.prepend(header);
+            getResult.data.forEach((identifier) => {
+                let el = d.createElement("li")
+                let key = Object.keys(identifier).join('')
+                el.textContent = identifier[key];
+                fragment.append(el);
+            })
+            display.append(fragment);
+
+            button.setAttribute('disabled', true); // disable submit button
+            button.setAttribute('aria-disabled', true); // disable submit button
+        }
     });
     
     input.addEventListener('change', (e) => {
@@ -84,7 +83,7 @@
             input.value = ''; 
             return false; 
         }
-    })
+    });
 
 })(document, window)
 
