@@ -1,10 +1,10 @@
 ((d, w) => {
 
-    const form = d.getElementById('uploadForm');
-    const input = d.getElementById('xmlInput');
-    const feedback = d.getElementById('invalid-feedback');
-    const display = d.getElementById('display-list');
-
+    let form = d.getElementById('uploadForm');
+    let input = d.getElementById('xmlInput');
+    let feedback = d.getElementById('invalid-feedback');
+    let button = d.getElementById('submitBtn');
+    let display = d.getElementById('display-list');
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -18,6 +18,13 @@
             method: 'POST',
             headers: myHeaders,
             body: new FormData(e.currentTarget) // event.currentTarget is the form
+        })
+        .then((data) => {
+            display = d.getElementById('display-list'); // get updated display
+            if (display.children.length > 0) {
+                Array.from(display.children).forEach((child) => display.removeChild(child));
+            }
+            return data
         })
         .then(handleResponse)
         .then((data) => {
@@ -40,6 +47,9 @@
                         fragment.append(el);
                     })
                     display.append(fragment);
+
+                    button.setAttribute('disabled', true); // disable submit button
+                    button.setAttribute('aria-disabled', true); // disable submit button
                 })
         })
         .catch((error) => {
@@ -47,24 +57,28 @@
             input.classList.add('is-invalid');
             feedback.textContent = "Error uploading XML: " + error.message;
             e.stopPropagation();
+            input.focus();
+
+            button.setAttribute('disabled', true); // disable submit button
+            button.setAttribute('aria-disabled', true); // disable submit button
         });
     });
     
+    input.addEventListener('change', (e) => {
+        // enable submit button once the input is clicked
+        button.removeAttribute('disabled'); // enable submit button
+        button.setAttribute('aria-disabled', false); // enable submit button
 
-    // window.addEventListener('load', function() {
-    //     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    //     let forms = document.getElementsByClassName('needs-validation');
-    //     // Loop over them and prevent submission
-    //     let validation = Array.prototype.filter.call(forms, function(form) {
-    //       form.addEventListener('submit', function(event) {
-    //         if (form.checkValidity() === false) {
-    //           event.preventDefault();
-    //           event.stopPropagation();
-    //         }
-    //         form.classList.add('was-validated');
-    //       }, false);
-    //     });
-    //   }, false);
+        // Checking file type 
+        let allowedExtensions =  
+        /(\.xml)$/i; 
+  
+        if (!allowedExtensions.exec(e.currentTarget.value)) { 
+            alert('Invalid file type, please choose an .xml file'); 
+            input.value = ''; 
+            return false; 
+        }
+    })
 
 })(document, window)
 

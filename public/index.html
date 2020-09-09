@@ -3,10 +3,10 @@
 <head>  
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IATI XML Parser</title>
+    <title>IATI XML Validate & Parse</title>
 
-        <!-- Bootstrap core CSS -->
-    <link href="./bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Bootstrap CDN CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <style>
         .bd-placeholder-img {
@@ -27,35 +27,50 @@
     <!-- Custom styles for this template -->
     <link href="cover.css" rel="stylesheet">
 
+    <!-- JavaScript to handle HTTP requests to the backend API -->
     <script defer src="./script.js"></script>
 </head>
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
-    <div class="inner">
-        <h1 class="cover-heading">IATA XML Upload & Parse</h1>
+    <div class="inner d-flex justify-content-around align-items-center">
+        <a title="RRZEicons / CC BY-SA (https://creativecommons.org/licenses/by-sa/3.0)" href="https://commons.wikimedia.org/wiki/File:Text-xml.svg"><img width="64" alt="Text-xml" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Text-xml.svg/64px-Text-xml.svg.png"></a>
+        <h1 class="cover-heading">IATA XML Validate & Parse</h1>
+        <img src="https://avatars1.githubusercontent.com/u/5502974?s=200&v=4" width="64" alt="iati icon">
     </div>
   </header>
-  <main role="main" class="inner cover">
-    <p class="lead">Upload an XML file to validate it and display the contained activity identifiers</p>
+  <main class="inner cover">
+    <p class="lead">Upload an XML file from your local machine to validate it and display the activity identifiers it contains</p>
+    <section class="instructions text-left mb-4">
+        <h4>Validation Performed</h4>
+        <ul>
+            <li>Valid XML</li>
+            <li>Root Element is &lt;iati-activities&gt;</li>
+        </ul>
+        <h4>Result</h4>
+        <ul>
+            <li>A list of &lt;iati-identifier&gt; contained in the valid XML document</li>
+        </ul>
+    </section>
     <form   
-        ref='uploadForm' 
         id='uploadForm' 
         action='http://localhost:3000/iatidoc' 
         method='post' 
         encType="multipart/form-data"
+        class="border border-secondary rounded p-3 mb-4"
     >
         <div class="needs-validation form-group lead">
+            <label for="xmlInput">Upload Form</label>
             <input 
                 type="file" 
                 id="xmlInput" 
-                class="form-control mb-4" 
+                class="form-control mb-4 form-control-md" 
                 name="xmlUpload" 
                 aria-describedby="invalid-feedback" 
             />
-            <div id="invalid-feedback" class="invalid-feedback mb-4">
+            <div id="invalid-feedback" class="invalid-feedback alert alert-danger mb-4">
             </div>
-            <button type="submit" id="submitXML" class="btn btn-lg btn-secondary">
+            <button type="submit" id="submitBtn" class="btn btn-lg btn-secondary" disabled>
                 Submit
             </button>
         </div>
@@ -67,7 +82,7 @@
   </main>
   <footer class="mastfoot mt-auto">
     <div class="inner">
-      <p>IATI XML Upload & Parse, by <a href="https://nikolaso.com">Nik Osvalds</a>.</p>
+      <p>IATI XML Validate & Parse, by <a href="https://nikolaso.com">Nik Osvalds</a>.</p>
     </div>
   </footer>
 </div>

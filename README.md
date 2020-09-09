@@ -75,9 +75,17 @@
 
 # Part 2 - SPA Front End
 - Tech: HTML, JavaScript, axiom, DOM
-- [ ] Form for uploading - makes POST request
-    - [ ] Validation
-    - [ ] Error display
-- [ ] Async action to perform GET request for the JSON array
-    - [ ] Error display
-    - [ ] Display of JSON array
+- [x] Form for uploading - makes POST request
+    - [x] Validation
+    - [x] Error display
+- [x] Async action to perform GET request for the JSON array
+    - [x] Error display
+    - [x] Display of JSON array
+
+# To Dos
+- [ ] Check that I'm doing the asyc request the right way (is nesting okay??)
+- [ ] Validate against Schema?
+- [ ] Make prettier
+- [ ] figure out serving bootstrap (or just use CDN)
+- [ ] Update documentation
+- [ ] Test from .zip
