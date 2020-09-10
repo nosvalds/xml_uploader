@@ -17,7 +17,7 @@
         let postResult = await fetch(d.URL + 'iatidoc', {
             method: 'POST',
             headers: myHeaders,
-            body: new FormData(e.currentTarget) // event.currentTarget is the form
+            body: new FormData(e.currentTarget) // e.currentTarget is the form
         })
         .then((data) => {
             display = d.getElementById('display-list'); // get updated display

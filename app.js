@@ -3,6 +3,7 @@ const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const xml2js = require('xml2js');
+const util = require('util');
 const parser = new xml2js.Parser();
 const fs = require('fs');
 
@@ -18,8 +19,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
 
-//start app 
+// set port 
 const port = process.env.PORT || 3000;
+
+// serve the public folder for the front end
+app.use(express.static('public'))
 
 // POST /iatidoc
 app.post('/iatidoc', async (req, res) => {
@@ -28,24 +32,23 @@ app.post('/iatidoc', async (req, res) => {
             throw new Error('No file uploaded')
         } else {
             // Get uploaded document from request
-            let xmlIn = req.files.xmlUpload // .xmlUpload needs to be name of input field in HTML
-            // valdation 
-            parser.parseString(xmlIn.data, (err, result) => {
-                if (err) throw err;
-                // Check root element is <iati-activities>
-                if (Object.keys(result).join('') !== 'iati-activities') {
-                    throw new Error("Root element is not <iati-activities>")
-                };
-            });
+            let xmlIn = req.files.xmlUpload // .xmlUpload is the name of input field in HTML
+            // valdation using xml2js parser
+            let parsed = await parser.parseStringPromise(xmlIn.data)
+
+            // Check root element is <iati-activities>
+            if (Object.keys(parsed).join('') !== 'iati-activities') {
+                throw new Error("Root element is not <iati-activities>")
+            };
+            
             // store document
             let filePath = __dirname + '/file_storage/' + xmlIn.md5 + '.xml';
-            xmlIn.mv(filePath, (err) => {
-                if (err) throw err;
-                res.send({
-                    message: "file uploaded",
-                    identifier: xmlIn.md5
-                })
-            });
+            await xmlIn.mv(filePath);
+
+            res.send({
+                message: "file uploaded",
+                identifier: xmlIn.md5
+            })
         }
     } catch (err) {
         res.status(400).send({
@@ -72,10 +75,10 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
 
                     // return a JSON array of iati-identifier elements
                     res.send({ 
-                        "data": result["iati-activities"]["iati-activity"]
-                                .map((val) => (
-                                    {"iati-identifier": val["iati-identifier"].join('')}
-                                ))
+                        "data": [...result["iati-activities"]["iati-activity"]]
+                            .map((val) => (
+                                {"iati-identifier": val["iati-identifier"].join('')}
+                            ))
                     })
                 });
             });
@@ -87,9 +90,6 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
         });
     }
 });
-
-// serve the public folder for the front end
-app.use(express.static('public'))
 
 app.listen(port, () => 
   console.log(`App is listening on port ${port}.`)
