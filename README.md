@@ -1,38 +1,59 @@
 # Getting Started
 
-1. Unzip or clone repo and navigate to that directory `cd <directory>`
+## Requirements
+
+- [node.js](https://nodejs.org/en/download/)
+    - Install with [homebrew](https://formulae.brew.sh/formula/node) on Mac
+      - `brew install node`
+
+## Steps
+1. Unzip the provided file or clone [github repo](git@github.com:nosvalds/xml_uploader.git) and navigate to the new directory `cd <directory>`
+    - It's currently a private repo so ask me for access if you want to go that way
 2. Run `npm install` in the terminal to install dependencies
 3. Run `node app.js` in the terminal to start the web server
-4. 
+4. Navigate to http://localhost:3000/ in your favourite browser
 
 # API Documentation
 
+## Headers
+- Accept: application/json
 ## `POST /iatidoc`
 
 ### Request
-- XML file
+- Header: Content-Type: multipart/form-data
+- XML file from form with name="xmlUpload"
 
 ### Responses
 
 ### Success
 ```json
 {
-    "file_id": "<unique document identifier>"
+    "message": "file uploaded",
+    "identifier": "9d03613dd895dcb1dbca361dad776562"
 }
 ```
 
-### Failure(s)
+### Failures
+#### No file
+```json
+{
+    "error": "Error uploading xml file",
+    "message": "No file uploaded"
+}
+```
 #### Invalid XML Document
 ```json
 {
-    "message": ""
+    "error": "Error uploading xml file",
+    "message": "<depends on parsing error>"
 }
 ```
 
 #### Root element is not `<iati-activities>`
 ```json
 {
-    "message": ""
+    "error": "Error uploading xml file",
+    "message": "Root element is not <iati-activities>"
 }
 ```
 
@@ -44,7 +65,14 @@
 - JSON array of the values of all iati-identifier elements within the document that has unique ID
 ```json
 {
-    "message": "EXAMPLE HERE"
+    "data": [
+        {
+            "iati-identifier": "AA-AAA-123456789-ABC123"
+        },
+        {
+            "iati-identifier": "BB-BBB-123456789-ABC123"
+        }
+    ]
 }
 ```
 
@@ -52,7 +80,8 @@
 #### No document exists with that identifier
 ```json
 {
-    "message": "FAILURE MESSAGE HERE"
+    "error": "Error loading or parsing xml file",
+    "message": "ENOENT: no such file or directory, open '/Users/nosvalds/Projects/IATIDevTest/XML_uploader/file_storage/9d03613dd895dcb1dbca361dad7765.xml'"
 }
 ```
 
@@ -62,19 +91,18 @@
 
 # Part 1 - Backend
 - Tech: Node.js, express, express-fileupload, xml-js
-- [ ] POST - Upload file
+- [x] POST - Upload file
     - [x] recieve file from POST request
-    - [ ] Validation
+    - [x] Validation
         - [x] Valid XML 
         - [x] Root element is `<iati-activities>`
-        - [ ] validate against Schema??
     - [x] Store file
     - [x] Response w/ unique identifier
 - [x] GET - Parse 
     - [x] Get .xml from storage and return JSON array
 
 # Part 2 - SPA Front End
-- Tech: HTML, JavaScript, axiom, DOM
+- Tech: HTML, JavaScript, DOM
 - [x] Form for uploading - makes POST request
     - [x] Validation
     - [x] Error display
@@ -83,9 +111,5 @@
     - [x] Display of JSON array
 
 # To Dos
-- [ ] Check that I'm doing the asyc request the right way (is nesting okay??)
-- [ ] Validate against Schema?
-- [ ] Make prettier
-- [ ] figure out serving bootstrap (or just use CDN)
-- [ ] Update documentation
-- [ ] Test from .zip
+- [x] Update documentation
+- [x] Test from .zip

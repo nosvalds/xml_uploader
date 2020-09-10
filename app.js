@@ -60,25 +60,21 @@ app.post('/iatidoc', async (req, res) => {
 
 app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
     try {
-        if (!req.params.documentId) {
-            throw new Error("No documentId provided")
-        } else {
-            let filePath = __dirname + '/file_storage/' + req.params.documentId + '.xml';
+        let filePath = __dirname + '/file_storage/' + req.params.documentId + '.xml';
 
-            // read file from storage
-            let data = await fsPromises.readFile(filePath)
-                
-            // parse xml to a js object
-            let result = await parser.parseStringPromise(data)
+        // read file from storage
+        let data = await fsPromises.readFile(filePath)
+            
+        // parse xml to a js object
+        let result = await parser.parseStringPromise(data)
 
-            // return a JSON array of iati-identifier elements
-            res.send({ 
-                "data": [...result["iati-activities"]["iati-activity"]]
-                    .map((val) => (
-                        {"iati-identifier": val["iati-identifier"].join('')}
-                    ))
-            })
-        }
+        // return a JSON array of iati-identifier elements
+        res.send({ 
+            "data": [...result["iati-activities"]["iati-activity"]]
+                .map((val) => (
+                    {"iati-identifier": val["iati-identifier"].join('')}
+                ))
+        })
     } catch (err) {
         res.status(400).send({
             "error": "Error loading or parsing xml file",
