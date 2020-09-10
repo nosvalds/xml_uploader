@@ -3,9 +3,9 @@ const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const xml2js = require('xml2js');
-const util = require('util');
 const parser = new xml2js.Parser();
 const fs = require('fs');
+const fsPromises = fs.promises;
 
 const app = express();
 
@@ -66,22 +66,18 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
             let filePath = __dirname + '/file_storage/' + req.params.documentId + '.xml';
 
             // read file from storage
-            fs.readFile(filePath , (err, data) => {
-                if (err) throw err;
+            let data = await fsPromises.readFile(filePath)
+                
+            // parse xml to a js object
+            let result = await parser.parseStringPromise(data)
 
-                // parse xml to a js object
-                parser.parseString(data, (err, result) => {
-                    if (err) throw err;
-
-                    // return a JSON array of iati-identifier elements
-                    res.send({ 
-                        "data": [...result["iati-activities"]["iati-activity"]]
-                            .map((val) => (
-                                {"iati-identifier": val["iati-identifier"].join('')}
-                            ))
-                    })
-                });
-            });
+            // return a JSON array of iati-identifier elements
+            res.send({ 
+                "data": [...result["iati-activities"]["iati-activity"]]
+                    .map((val) => (
+                        {"iati-identifier": val["iati-identifier"].join('')}
+                    ))
+            })
         }
     } catch (err) {
         res.status(400).send({
