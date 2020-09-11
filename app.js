@@ -83,6 +83,8 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
     }
 });
 
-app.listen(port, () => 
-  console.log(`App is listening on port ${port}.`)
+app.listen(port, () => {
+        console.log(`API is listening on port ${port}.`);
+        console.log(`Access application at http://localhost:${port}`);
+    }
 );

@@ -17,6 +17,7 @@
 
 ## Headers
 - Accept: application/json
+
 ## `POST /iatidoc`
 
 ### Request
@@ -89,7 +90,7 @@
 
 # Planning
 
-# Part 1 - Backend
+## Part 1 - Backend
 - Tech: Node.js, express, express-fileupload, xml-js
 - [x] POST - Upload file
     - [x] recieve file from POST request
@@ -101,7 +102,7 @@
 - [x] GET - Parse 
     - [x] Get .xml from storage and return JSON array
 
-# Part 2 - SPA Front End
+## Part 2 - SPA Front End
 - Tech: HTML, JavaScript, DOM
 - [x] Form for uploading - makes POST request
     - [x] Validation
@@ -110,8 +111,8 @@
     - [x] Error display
     - [x] Display of JSON array
 
-# To Dos
+## To Dos
 - [x] Update documentation
 - [x] Fix error handling in script.js
-- [ ] Backend: HTTP status code for validation errors??
-- [ ] Test from .zip
+- [x] Backend: HTTP status code for validation errors??
+- [x] Test from .zip
