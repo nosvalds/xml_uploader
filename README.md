@@ -112,4 +112,6 @@
 
 # To Dos
 - [x] Update documentation
-- [x] Test from .zip
+- [x] Fix error handling in script.js
+- [ ] Backend: HTTP status code for validation errors??
+- [ ] Test from .zip

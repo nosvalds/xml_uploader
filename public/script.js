@@ -13,35 +13,20 @@
         e.preventDefault();
         input.classList.remove('is-invalid');
 
-        // POST XML to Backend API
-        let postResult = await fetch(d.URL + 'iatidoc', {
-            method: 'POST',
-            headers: myHeaders,
-            body: new FormData(e.currentTarget) // e.currentTarget is the form
-        })
-        .then((data) => {
-            display = d.getElementById('display-list'); // get updated display
+        try {
+            // POST XML to Backend API
+            let postResult = await fetch(d.URL + 'iatidoc', {
+                method: 'POST',
+                headers: myHeaders,
+                body: new FormData(e.currentTarget) // e.currentTarget is the form
+            })
+            .then((data) => {
+                cleanDisplay();
+                return data
+            })
+            .then(handleResponse)
 
-            // remove previous results if we had any
-            if (display.children.length > 0) {
-                Array.from(display.children).forEach((child) => display.removeChild(child));
-            }
-            return data
-        })
-        .then(handleResponse)
-        .catch((error) => {
-            //  handle error
-            input.classList.add('is-invalid');
-            feedback.textContent = "Error uploading XML: " + error.message;
-            e.stopPropagation();
-            input.focus();
-
-            button.setAttribute('disabled', true); // disable submit button
-            button.setAttribute('aria-disabled', true); // disable submit button
-        });
-
-        if (postResult) {
-            // handle success
+            // if we get here it's valid XML
             form.classList.add('is-valid');
 
             // if POST was successfull GET information about identifiers
@@ -51,30 +36,26 @@
             })
             .then(handleResponse)
             
-            // output identifiers into the page
-            let fragment = d.createDocumentFragment();
-            let header = d.createElement("h3");
-            header.textContent = "Activity Identifiers";
-            fragment.prepend(header);
-            getResult.data.forEach((identifier) => {
-                let el = d.createElement("li")
-                let key = Object.keys(identifier).join('')
-                el.textContent = identifier[key];
-                fragment.append(el);
-            })
-            display.append(fragment);
+            // insert identifiers into the page
+            instertIdentifiers(getResult.data);
+            
+            disableSubmit(true);
+        } catch (error) {
+            //  handle error
+            input.classList.add('is-invalid');
+            feedback.textContent = "Error uploading XML: " + error.message;
+            e.stopPropagation();
 
-            button.setAttribute('disabled', true); // disable submit button
-            button.setAttribute('aria-disabled', true); // disable submit button
-        }
+            disableSubmit(true);
+        };
+        
     });
     
     input.addEventListener('change', (e) => {
-        // enable submit button once the input is clicked
-        button.removeAttribute('disabled'); // enable submit button
-        button.setAttribute('aria-disabled', false); // enable submit button
+        // enable submit btn once file is in input
+        disableSubmit(false);
 
-        // Checking file type 
+        // validating file extension 
         let allowedExtensions =  
         /(\.xml)$/i; 
   
@@ -84,6 +65,39 @@
             return false; 
         }
     });
+
+    const instertIdentifiers = (identifiers) => {
+        let fragment = d.createDocumentFragment();
+        let header = d.createElement("h3");
+        header.textContent = "Activity Identifiers";
+        fragment.prepend(header);
+        identifiers.forEach((identifier) => {
+            let el = d.createElement("li")
+            let key = Object.keys(identifier).join('')
+            el.textContent = identifier[key];
+            fragment.append(el);
+        })
+        display.append(fragment);
+    }
+
+    const disableSubmit = (boolean) => {
+        if (boolean) {
+            button.setAttribute('disabled', boolean); // disable/enable submit button
+            button.setAttribute('aria-disabled', boolean); // disable/enable submit button
+        } else {
+            // enable submit button 
+            button.removeAttribute('disabled'); // enable submit button
+            button.setAttribute('aria-disabled', false); // enable submit button
+        }
+    }
+
+    const cleanDisplay = () => {
+        display = d.getElementById('display-list'); // get updated display
+        // remove previous results if we had any
+        if (display.children.length > 0) {
+            Array.from(display.children).forEach((child) => display.removeChild(child));
+        }
+    }
 
 })(document, window)
 
