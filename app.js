@@ -51,7 +51,7 @@ app.post('/iatidoc', async (req, res) => {
             })
         }
     } catch (err) {
-        res.status(400).send({
+        res.status(422).send({
             "error": "Error uploading xml file",
             "message": err.message
         });
@@ -76,7 +76,7 @@ app.get('/iatidoc/activity-identifiers/:documentId', async (req, res) => {
                 ))
         })
     } catch (err) {
-        res.status(400).send({
+        res.status(422).send({
             "error": "Error loading or parsing xml file",
             "message": err.message
         });
